@@ -19,6 +19,7 @@ class Chip:
         inputChip = [], inputWire =[], 
         outChip = [], outWire = [],
         lsb = 0, msb = 0,
+        internal = None
     ):
         if (msb - lsb) == 0:
             args = []
@@ -34,10 +35,16 @@ class Chip:
             for b in range(lsb, msb, 1):
                 args = []
                 for inputPair in zip(inputChip, inputWire):
-                    args.append(f"{inputPair[0]}={inputPair[1]}[{b}]")
+                    if internal == "in":
+                        args.append(f"{inputPair[0]}={inputPair[1]}{b}")
+                    else:
+                        args.append(f"{inputPair[0]}={inputPair[1]}[{b}]")
                 
                 for outPair in zip(outChip, outWire):
-                    args.append(f"{outPair[0]}={outPair[1]}[{b}]")
+                    if internal == "out":
+                        args.append(f"{outPair[0]}={outPair[1]}{b}")
+                    else:
+                        args.append(f"{outPair[0]}={outPair[1]}[{b}]")
 
                 self.parts.append(f"{chipName}({", ".join(args)});")
 
@@ -55,7 +62,8 @@ CHIP {self.name}{self.bit} {{
 
 
 if __name__ == "__main__":
-    andChip = Chip(name="Not", bit=16)
-    andChip.chip_io(["in[16]"], ["out[16]"])
-    andChip.add_function("Not", ["in"], ["in"], ["out"], ["out"], 0, 16)
-    andChip.dump("Not16.thdl")
+    andChip = Chip(name="And", bit=16)
+    andChip.chip_io(["a[16]", "b[16]"], ["out[16]"])
+    andChip.add_function("Nand", ["a", "b"], ["a", "b"], ["out"], ["w"], 0, 16, "out")
+    andChip.add_function("Not", ["in"], ["w"], ["out"], ["out"], 0, 16, "in")
+    andChip.dump("And16.thdl")
