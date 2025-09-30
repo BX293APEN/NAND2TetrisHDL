@@ -1,5 +1,5 @@
 class Chip:
-    def __init__(self, name, bit=1):
+    def __init__(self, name, bit=1, debug = False):
         self.name = name
         if bit >1:
             self.bit = f"{bit}"
@@ -8,6 +8,8 @@ class Chip:
         self.inputs = []
         self.outputs = []
         self.parts = []
+
+        self.debug = debug
 
     def chip_io(self, wireInput=[], wireOutput=[]):
         self.inputs = wireInput
@@ -34,6 +36,8 @@ class Chip:
                 args.append(f"{outPair[0]}={outPair[1]}")
 
             self.parts.append(f"{chipName}({", ".join(args)});")
+            if self.debug:
+                print(f"{chipName}({", ".join(args)});")
         
         else:
             for b in range(lsb, msb, 1):
@@ -70,7 +74,31 @@ CHIP {self.name}{self.bit} {{
 
 
 if __name__ == "__main__":
-    andChip = Chip(name="Mux", bit=16)
-    andChip.chip_io(["a[16]", "b[16]", "sel"], ["out[16]"])
-    andChip.add_function("Mux", ["a", "b", "sel"], ["a", "b", "sel"], ["out"], ["out"], 0, 16, directPin = ["sel"])
-    andChip.dump("Mux16.thdl")
+    andChip = Chip(name="Or8Way")
+    andChip.chip_io(["in[8]"], ["out"])
+    maxBit = 8
+    b = 0
+    flag = 0
+    state = 0
+    lastB = maxBit
+    while True:
+        abit = b + state
+        bbit = lastB  - b - 1 + state
+        if abit < bbit:
+            if flag == 0:
+                andChip.add_function("Or", ["a", "b"], [f"in[{abit}]", f"in[{bbit}]"], ["out"], [f"w{abit}"])
+            else:
+                andChip.add_function("Or", ["a", "b"], [f"w{abit}", f"w{bbit}"], ["out"], [f"w{abit + lastB}"])
+            b += 1
+        else:
+            if flag == 0:
+                flag = 1
+            else:
+                state += b*2
+            lastB = b
+            if lastB == 0:
+                andChip.add_function("Or", ["a", "b"], [f"w{state}", f"w{state}"], ["out"], [f"out"])
+                break
+            b = 0
+
+    andChip.dump("Or8Way.thdl")
