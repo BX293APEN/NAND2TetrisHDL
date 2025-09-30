@@ -56,6 +56,6 @@ CHIP {self.name}{self.bit} {{
 
 if __name__ == "__main__":
     andChip = Chip(name="Not", bit=16)
-    andChip.chip_io(["in"], ["out"])
+    andChip.chip_io(["in[16]"], ["out[16]"])
     andChip.add_function("Not", ["in"], ["in"], ["out"], ["out"], 0, 16)
     andChip.dump("Not16.thdl")
