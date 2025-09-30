@@ -13,13 +13,17 @@ class Chip:
         self.inputs = wireInput
         self.outputs = wireOutput
 
+    def add_comment(self, message):
+        self.parts.append(f"// {message}")
+
     def add_function(
         self, 
         chipName, 
         inputChip = [], inputWire =[], 
         outChip = [], outWire = [],
         lsb = 0, msb = 0,
-        internal = []
+        internal = [],
+        directPin = []
     ):
         if (msb - lsb) == 0:
             args = []
@@ -37,12 +41,16 @@ class Chip:
                 for inputPair in zip(inputChip, inputWire):
                     if inputPair[1] in internal:
                         args.append(f"{inputPair[0]}={inputPair[1]}{b}")
+                    elif inputPair[1] in directPin:
+                        args.append(f"{inputPair[0]}={inputPair[1]}")
                     else:
                         args.append(f"{inputPair[0]}={inputPair[1]}[{b}]")
                 
                 for outPair in zip(outChip, outWire):
                     if outPair[1] in internal:
                         args.append(f"{outPair[0]}={outPair[1]}{b}")
+                    elif outPair[1] in directPin:
+                        args.append(f"{outPair[0]}={outPair[1]}")
                     else:
                         args.append(f"{outPair[0]}={outPair[1]}[{b}]")
 
@@ -62,7 +70,7 @@ CHIP {self.name}{self.bit} {{
 
 
 if __name__ == "__main__":
-    andChip = Chip(name="Or", bit=16)
-    andChip.chip_io(["a[16]", "b[16]"], ["out[16]"])
-    andChip.add_function("Or", ["a", "b"], ["a", "b"], ["out"], ["out"], 0, 16)
-    andChip.dump("Or16.thdl")
+    andChip = Chip(name="Mux", bit=16)
+    andChip.chip_io(["a[16]", "b[16]", "sel"], ["out[16]"])
+    andChip.add_function("Mux", ["a", "b", "sel"], ["a", "b", "sel"], ["out"], ["out"], 0, 16, directPin = ["sel"])
+    andChip.dump("Mux16.thdl")
