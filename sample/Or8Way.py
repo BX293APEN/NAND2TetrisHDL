@@ -1,19 +1,19 @@
 class Chip:
     def __init__(self, name, bit=1, debug = False):
-        self.name = name
+        self.name       = name
         if bit >1:
-            self.bit = f"{bit}"
+            self.bit    = f"{bit}"
         else:
-            self.bit = ""
-        self.inputs = []
-        self.outputs = []
-        self.parts = []
+            self.bit    = ""
+        self.inputs     = []
+        self.outputs    = []
+        self.parts      = []
 
-        self.debug = debug
+        self.debug      = debug
 
     def chip_io(self, wireInput=[], wireOutput=[]):
-        self.inputs = wireInput
-        self.outputs = wireOutput
+        self.inputs     = wireInput
+        self.outputs    = wireOutput
 
     def add_comment(self, message):
         self.parts.append(f"// {message}")
@@ -21,14 +21,14 @@ class Chip:
     def add_function(
         self, 
         chipName, 
-        inputChip = [], inputWire =[], 
-        outChip = [], outWire = [],
-        lsb = 0, msb = 0,
-        internal = [],
-        directPin = []
+        inputChip       = [], inputWire     = [], 
+        outChip         = [], outWire       = [],
+        lsb             = 0, msb            = 0,
+        internal        = [],
+        directPin       = []
     ):
         if (msb - lsb) == 0:
-            args = []
+            args        = []
             for inputPair in zip(inputChip, inputWire):
                 args.append(f"{inputPair[0]}={inputPair[1]}")
             
@@ -41,7 +41,7 @@ class Chip:
         
         else:
             for b in range(lsb, msb, 1):
-                args = []
+                args    = []
                 for inputPair in zip(inputChip, inputWire):
                     if inputPair[1] in internal:
                         args.append(f"{inputPair[0]}={inputPair[1]}{b}")
@@ -71,7 +71,6 @@ CHIP {self.name}{self.bit} {{
         
         with open(path, "w", encoding="UTF-8") as f:
             f.write(hdlData)
-
 
 if __name__ == "__main__":
     andChip = Chip(name="Or8Way")
