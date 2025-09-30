@@ -31,7 +31,7 @@ class Chip:
             self.parts.append(f"{chipName}({", ".join(args)});")
         
         else:
-            for b in range(lsb, msb+1, 1):
+            for b in range(lsb, msb, 1):
                 args = []
                 for inputPair in zip(inputChip, inputWire):
                     args.append(f"{inputPair[0]}={inputPair[1]}[{b}]")
@@ -55,8 +55,7 @@ CHIP {self.name}{self.bit} {{
 
 
 if __name__ == "__main__":
-    andChip = Chip(name="And")
-    andChip.chip_io(["a", "b"], ["out"])
-    andChip.add_function("Nand", ["a", "b"], ["a", "b"], ["out"], ["w1"])
-    andChip.add_function("Not", ["in"], ["w1"], ["out"], ["out"])
-    andChip.dump("And.thdl")
+    andChip = Chip(name="Not", bit=16)
+    andChip.chip_io(["in"], ["out"])
+    andChip.add_function("Not", ["in"], ["in"], ["out"], ["out"], 0, 16)
+    andChip.dump("Not16.thdl")
