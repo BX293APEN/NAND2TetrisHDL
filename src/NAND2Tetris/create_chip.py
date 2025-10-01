@@ -60,7 +60,7 @@ class Chip:
 
                 self.parts.append(f"{chipName}({", ".join(args)});")
 
-    def dump(self, path):
+    def dump(self, path, mode = "w"):
         hdlData = f"""// {self.name} CHIP
 CHIP {self.name}{self.bit} {{
     IN {', '.join(self.inputs)};
@@ -69,35 +69,29 @@ CHIP {self.name}{self.bit} {{
         {"\n        ".join(self.parts)}
 }}"""
         
-        with open(path, "w", encoding="UTF-8") as f:
+        with open(path, mode, encoding="UTF-8") as f:
             f.write(hdlData)
 
-if __name__ == "__main__":
-    andChip = Chip(name="Or8Way")
-    andChip.chip_io(["in[8]"], ["out"])
-    maxBit = 8
-    b = 0
-    flag = 0
-    state = 0
-    lastB = maxBit
-    while True:
-        abit = b + state
-        bbit = lastB  - b - 1 + state
-        if abit < bbit:
-            if flag == 0:
-                andChip.add_function("Or", ["a", "b"], [f"in[{abit}]", f"in[{bbit}]"], ["out"], [f"w{abit}"])
-            else:
-                andChip.add_function("Or", ["a", "b"], [f"w{abit}", f"w{bbit}"], ["out"], [f"w{abit + lastB}"])
-            b += 1
-        else:
-            if flag == 0:
-                flag = 1
-            else:
-                state += b*2
-            lastB = b
-            if lastB == 0:
-                andChip.add_function("Or", ["a", "b"], [f"w{state}", f"w{state}"], ["out"], [f"out"])
-                break
-            b = 0
 
-    andChip.dump("Or8Way.thdl")
+if __name__ == "__main__":
+    andChip = Chip(name="Mux4Way16")
+    andChip.chip_io(["a[16]", "b[16]", "c[16]", "d[16]", "sel[2]"], ["out[16]"])
+    andChip.add_function("Not", ["in"], ["sel[0]"], ["out"], ["notsel0"])
+    andChip.add_function("Not", ["in"], ["sel[1]"], ["out"], ["notsel1"])
+    andChip.add_comment("MSB : sel[1] LSB : sel[0] の順番")
+    andChip.add_function("And", ["a", "b"], ["notsel1", "notsel0"], ["out"], ["selA"])
+    andChip.add_function("And", ["a", "b"], ["notsel1", "sel[0]"], ["out"], ["selB"])
+    andChip.add_function("And", ["a", "b"], ["sel[1]", "notsel0"], ["out"], ["selC"])
+    andChip.add_function("And", ["a", "b"], ["sel[1]", "sel[0]"], ["out"], ["selD"])
+
+    andChip.add_comment("チップをセレクトする")
+    andChip.add_function("And", ["a", "b"], ["a", "selA"], ["out"], ["aVal"], lsb=0, msb=16, directPin=["selA"], internal=["aVal"])
+    andChip.add_function("And", ["a", "b"], ["b", "selB"], ["out"], ["bVal"], lsb=0, msb=16, directPin=["selB"], internal=["bVal"])
+    andChip.add_function("And", ["a", "b"], ["c", "selC"], ["out"], ["cVal"], lsb=0, msb=16, directPin=["selC"], internal=["cVal"])
+    andChip.add_function("And", ["a", "b"], ["d", "selD"], ["out"], ["dVal"], lsb=0, msb=16, directPin=["selD"], internal=["dVal"])
+    
+    andChip.add_comment("結果の合成")
+    andChip.add_function("Or", ["a", "b"], ["aVal", "bVal"], ["out"], ["abVal"], lsb=0, msb=16, internal=["aVal", "bVal", "abVal"])
+    andChip.add_function("Or", ["a", "b"], ["cVal", "dVal"], ["out"], ["cdVal"], lsb=0, msb=16, internal=["cVal", "dVal", "cdVal"])
+    andChip.add_function("Or", ["a", "b"], ["abVal", "cdVal"], ["out"], ["out"], lsb=0, msb=16, internal=["abVal", "cdVal"])
+    andChip.dump("Mux4Way16.thdl")
