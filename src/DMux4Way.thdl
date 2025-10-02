@@ -1,0 +1,18 @@
+// DMux4Way CHIP
+CHIP DMux4Way {
+    IN in, sel[2];
+    OUT a, b, c, d;
+    PARTS:
+        Not(in=sel[0], out=notsel0);
+        Not(in=sel[1], out=notsel1);
+        // MSB : sel[1] LSB : sel[0] の順番
+        And(a=notsel1, b=notsel0, out=selA);
+        And(a=notsel1, b=sel[0], out=selB);
+        And(a=sel[1], b=notsel0, out=selC);
+        And(a=sel[1], b=sel[0], out=selD);
+        // 出力をセレクトする
+        And(a=in, b=selA, out=a);
+        And(a=in, b=selB, out=b);
+        And(a=in, b=selC, out=c);
+        And(a=in, b=selD, out=d);
+}

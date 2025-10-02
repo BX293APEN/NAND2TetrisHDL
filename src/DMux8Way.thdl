@@ -1,0 +1,31 @@
+// DMux8Way CHIP
+CHIP DMux8Way {
+    IN in, sel[3];
+    OUT a, b, c, d, e, f, g, h;
+    PARTS:
+        Not(in=sel[0], out=notsel0);
+        Not(in=sel[1], out=notsel1);
+        Not(in=sel[2], out=notsel2);
+        // MSB : sel[2] LSB : sel[0] の順番
+        And(a=notsel1, b=notsel0, out=sel00);
+        And(a=notsel1, b=sel[0], out=sel01);
+        And(a=sel[1], b=notsel0, out=sel10);
+        And(a=sel[1], b=sel[0], out=sel11);
+        And(a=notsel2, b=sel00, out=selA);
+        And(a=notsel2, b=sel01, out=selB);
+        And(a=notsel2, b=sel10, out=selC);
+        And(a=notsel2, b=sel11, out=selD);
+        And(a=sel[2], b=sel00, out=selE);
+        And(a=sel[2], b=sel01, out=selF);
+        And(a=sel[2], b=sel10, out=selG);
+        And(a=sel[2], b=sel11, out=selH);
+        // 出力をセレクトする
+        And(a=in, b=selA, out=a);
+        And(a=in, b=selB, out=b);
+        And(a=in, b=selC, out=c);
+        And(a=in, b=selD, out=d);
+        And(a=in, b=selE, out=e);
+        And(a=in, b=selF, out=f);
+        And(a=in, b=selG, out=g);
+        And(a=in, b=selH, out=h);
+}
