@@ -2,26 +2,29 @@ from NAND2Tetris import Chip
 import os
 if __name__ == "__main__":
     directory = os.path.dirname(os.path.abspath(__file__))
-    and3 = Chip(name="And3")
-    and3.chip_io(["a", "b", "c"], ["out"])
-    and3.add_function("And", ["a", "b"], ["a", "b"], ["out"], ["ab"])
-    and3.add_function("And", ["a", "b"], ["ab", "c"], ["out"], ["out"])
-    and3.dump(f"{directory}/Mux8Way16.thdl")
     
     mux8way16 = Chip(name="Mux8Way16")
     mux8way16.chip_io(["a[16]", "b[16]", "c[16]", "d[16]", "e[16]", "f[16]", "g[16]", "h[16]", "sel[3]"], ["out[16]"])
     mux8way16.add_function("Not", ["in"], ["sel[0]"], ["out"], ["notsel0"])
     mux8way16.add_function("Not", ["in"], ["sel[1]"], ["out"], ["notsel1"])
     mux8way16.add_function("Not", ["in"], ["sel[2]"], ["out"], ["notsel2"])
+    
     mux8way16.add_comment("MSB : sel[2] LSB : sel[0] の順番")
-    mux8way16.add_function("And3", ["a", "b", "c"], ["notsel2", "notsel1", "notsel0"], ["out"], ["selA"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["notsel2", "notsel1", "sel[0]"], ["out"], ["selB"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["notsel2", "sel[1]", "notsel0"], ["out"], ["selC"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["notsel2", "sel[1]", "sel[0]"], ["out"], ["selD"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["sel[2]", "notsel1", "notsel0"], ["out"], ["selE"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["sel[2]", "notsel1", "sel[0]"], ["out"], ["selF"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["sel[2]", "sel[1]", "notsel0"], ["out"], ["selG"])
-    mux8way16.add_function("And3", ["a", "b", "c"], ["sel[2]", "sel[1]", "sel[0]"], ["out"], ["selH"])
+
+    mux8way16.add_function("And", ["a", "b"], ["notsel1", "notsel0"], ["out"], ["sel00"])
+    mux8way16.add_function("And", ["a", "b"], ["notsel1", "sel[0]"], ["out"], ["sel01"])
+    mux8way16.add_function("And", ["a", "b"], ["sel[1]", "notsel0"], ["out"], ["sel10"])
+    mux8way16.add_function("And", ["a", "b"], ["sel[1]", "sel[0]"], ["out"], ["sel11"])
+
+    mux8way16.add_function("And", ["a", "b"], ["notsel2", "sel00"], ["out"], ["selA"])
+    mux8way16.add_function("And", ["a", "b"], ["notsel2", "sel01"], ["out"], ["selB"])
+    mux8way16.add_function("And", ["a", "b"], ["notsel2", "sel10"], ["out"], ["selC"])
+    mux8way16.add_function("And", ["a", "b"], ["notsel2", "sel11"], ["out"], ["selD"])
+    mux8way16.add_function("And", ["a", "b"], ["sel[2]", "sel00"], ["out"], ["selE"])
+    mux8way16.add_function("And", ["a", "b"], ["sel[2]", "sel01"], ["out"], ["selF"])
+    mux8way16.add_function("And", ["a", "b"], ["sel[2]", "sel10"], ["out"], ["selG"])
+    mux8way16.add_function("And", ["a", "b"], ["sel[2]", "sel11"], ["out"], ["selH"])
+
 
     mux8way16.add_comment("チップをセレクトする")
     mux8way16.add_function("And", ["a", "b"], ["a", "selA"], ["out"], ["aVal"], lsb=0, msb=16, directPin=["selA"], internal=["aVal"])
@@ -42,4 +45,4 @@ if __name__ == "__main__":
     mux8way16.add_function("Or", ["a", "b"], ["abVal", "cdVal"], ["out"], ["abcdVal"], lsb=0, msb=16, internal=["abVal", "cdVal", "abcdVal"])
     mux8way16.add_function("Or", ["a", "b"], ["efVal", "ghVal"], ["out"], ["efghVal"], lsb=0, msb=16, internal=["efVal", "ghVal", "efghVal"])
     mux8way16.add_function("Or", ["a", "b"], ["abcdVal", "efghVal"], ["out"], ["out"], lsb=0, msb=16, internal=["abcdVal", "efghVal"])
-    mux8way16.dump(f"{directory}/Mux8Way16.thdl", "a")
+    mux8way16.dump(f"{directory}/Mux8Way16.thdl")
