@@ -14,13 +14,27 @@ if __name__ == "__main__":
     )
 
     alu.add_comment("zx : 1 → xを0にする")
+    #alu.add_function(
+    #    "Mux", 
+    #    ["a", "b", "sel"], ["x", "false", "zx"], 
+    #    ["out"], ["xzx"],
+    #    lsb = 0, msb=16,
+    #    internal=["xzx"],
+    #    directPin=["false", "zx"]
+    #)
     alu.add_function(
-        "Mux", 
-        ["a", "b", "sel"], ["x", "false", "zx"], 
+        "Not",
+        ["in"], ["zx"], 
+        ["out"], ["nzx"]
+    )
+
+    alu.add_function(
+        "And", 
+        ["a", "b"], ["x", "nzx"], 
         ["out"], ["xzx"],
         lsb = 0, msb=16,
         internal=["xzx"],
-        directPin=["false", "zx"]
+        directPin=["nzx"]
     )
 
     alu.add_comment("nx : 1 → xを反転する")
@@ -34,13 +48,27 @@ if __name__ == "__main__":
     )
 
     alu.add_comment("zy : 1 → yを0にする")
+    #alu.add_function(
+    #    "Mux", 
+    #    ["a", "b", "sel"], ["y", "false", "zy"], 
+    #    ["out"], ["yzy"],
+    #    lsb = 0, msb=16,
+    #    internal=["yzy"],
+    #    directPin=["false", "zy"]
+    #)
     alu.add_function(
-        "Mux", 
-        ["a", "b", "sel"], ["y", "false", "zy"], 
+        "Not",
+        ["in"], ["zy"], 
+        ["out"], ["nzy"]
+    )
+
+    alu.add_function(
+        "And", 
+        ["a", "b"], ["y", "nzy"], 
         ["out"], ["yzy"],
         lsb = 0, msb=16,
         internal=["yzy"],
-        directPin=["false", "zy"]
+        directPin=["nzy"]
     )
 
     alu.add_comment("nx : 1 → xを反転する")
