@@ -15,6 +15,16 @@ if __name__ == "__main__":
         
     )
     ram8.add_function(
+        "And",
+        ["a", "b"],
+        ["rl", "load"],
+        ["out"],
+        ["rLoad"],
+        lsb=0, msb=8, 
+        directPin=["load"],
+        internal=["rLoad" ,"rl"]
+    )
+    ram8.add_function(
         "Register", 
         ["in", "load"], 
         ["in", "rLoad"],
