@@ -1,0 +1,25 @@
+// RAM4K CHIP
+CHIP RAM4K {
+    IN in[16], load, address[12];
+    OUT out[16];
+    PARTS:
+        // アクセスするレジスタを決定する
+        DMux8Way(in=true, sel[2]=address[11], sel[1]=address[10], sel[0]=address[9], a=rl0, b=rl1, c=rl2, d=rl3, e=rl4, f=rl5, g=rl6, h=rl7);
+        And(a=rl0, b=load, out=rLoad0);
+        And(a=rl1, b=load, out=rLoad1);
+        And(a=rl2, b=load, out=rLoad2);
+        And(a=rl3, b=load, out=rLoad3);
+        And(a=rl4, b=load, out=rLoad4);
+        And(a=rl5, b=load, out=rLoad5);
+        And(a=rl6, b=load, out=rLoad6);
+        And(a=rl7, b=load, out=rLoad7);
+        RAM512(in=in, load=rLoad0, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut0);
+        RAM512(in=in, load=rLoad1, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut1);
+        RAM512(in=in, load=rLoad2, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut2);
+        RAM512(in=in, load=rLoad3, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut3);
+        RAM512(in=in, load=rLoad4, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut4);
+        RAM512(in=in, load=rLoad5, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut5);
+        RAM512(in=in, load=rLoad6, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut6);
+        RAM512(in=in, load=rLoad7, address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut7);
+        Mux8Way16(a=rOut0, b=rOut1, c=rOut2, d=rOut3, e=rOut4, f=rOut5, g=rOut6, h=rOut7, sel[2]=address[11], sel[1]=address[10], sel[0]=address[9], out=out);
+}
