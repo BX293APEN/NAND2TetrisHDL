@@ -1,0 +1,13 @@
+// PC CHIP
+CHIP PC {
+    IN in[16], load, inc, reset;
+    OUT out[16];
+    PARTS:
+        // 値を変更するか決める
+        Or(a=load, b=inc, out=li);
+        Or(a=li, b=reset, out=change);
+        Add16(a=rOut, b[1..15]=false, b[0]=inc, out=counter);
+        Mux16(a=counter, b=in, sel=load, out=ri);
+        Mux16(a=ri, b[0..15]=false, sel=reset, out=inReset);
+        Register(in=inReset, load=change, out=rOut, out=out);
+}
