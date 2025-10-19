@@ -1,0 +1,17 @@
+// RAM16K CHIP
+CHIP RAM16K {
+    IN in[16], load, address[14];
+    OUT out[16];
+    PARTS:
+        // アクセスするレジスタを決定する
+        DMux4Way(in=true, sel[1]=address[13], sel[0]=address[12], a=rl0, b=rl1, c=rl2, d=rl3);
+        And(a=rl0, b=load, out=rLoad0);
+        And(a=rl1, b=load, out=rLoad1);
+        And(a=rl2, b=load, out=rLoad2);
+        And(a=rl3, b=load, out=rLoad3);
+        RAM4K(in=in, load=rLoad0, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut0);
+        RAM4K(in=in, load=rLoad1, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut1);
+        RAM4K(in=in, load=rLoad2, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut2);
+        RAM4K(in=in, load=rLoad3, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut3);
+        Mux4Way16(a=rOut0, b=rOut1, c=rOut2, d=rOut3, sel[1]=address[13], sel[0]=address[12], out=out);
+}
