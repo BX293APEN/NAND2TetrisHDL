@@ -11,25 +11,17 @@ if __name__ == "__main__":
     memory.add_function(
         "DMux",
         ["in", "sel"],
-        ["true", "address[14]"],
+        ["load", "address[14]"],
         ["a", "b"],
-        ["rl", "ml"]
+        ["rLoad", "mLoad"]
     )
 
     memory.add_function(
         "DMux",
         ["in", "sel"],
-        ["ml", "address[13]"],
+        ["mLoad", "address[13]"],
         ["a", "b"],
-        ["sl", "kl"]
-    )
-
-    memory.add_function(
-        "And",
-        ["a", "b"],
-        ["rl", "load"],
-        ["out"],
-        ["rLoad"]
+        ["scLoad", "kLoad"]
     )
 
 
@@ -53,14 +45,6 @@ if __name__ == "__main__":
         ],
         ["out"], 
         ["rOut"], 
-    )
-
-    memory.add_function(
-        "And",
-        ["a", "b"],
-        ["sl", "load"],
-        ["out"],
-        ["scLoad"]
     )
 
     memory.add_function(
