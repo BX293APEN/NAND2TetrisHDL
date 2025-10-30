@@ -1,0 +1,27 @@
+// CPU CHIP
+CHIP CPU {
+    IN inM[16], instruction[16], reset;
+    OUT outM[16], writeM, addressM[15], pc[15];
+    PARTS:
+        Not(in=instruction[15], out=instA);
+        Not(in=instA, out=instC);
+        Mux16(a=instruction, b=aluOut, sel=instC, out=instOut);
+        Or(a=instA, b=instruction[5], out=aLoad);
+        Register(in=instOut, load=aLoad, out=aROut, out[0..14]=addressM[0..14]);
+        And(a=instC, b=instruction[4], out=dLoad);
+        DRegister(in=aluOut, load=dLoad, out=dOut);
+        Mux16(a=aROut, b=inM, sel=instruction[12], out=amOut);
+        ALU(x=dOut, y=amOut, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluOut, out=outM, zr=zr, ng=ng);
+        And(a=instruction[3], b=instC, out=writeM);
+        // プログラムカウンタ処理
+        And(a=ng, b=instruction[2], out=ngJmp);
+        And(a=zr, b=instruction[1], out=zrJmp);
+        Or(a=ng, b=zr, out=lezero);
+        Not(in=lezero, out=gtzero);
+        And(a=gtzero, b=instruction[0], out=gtJmp);
+        Or(a=ngJmp, b=zrJmp, out=ngzrJmp);
+        Or(a=ngzrJmp, b=gtJmp, out=jmp);
+        And(a=jmp, b=instC, out=pcLoad);
+        Not(in=pcLoad, out=pcInc);
+        PC(in=aROut, load=pcLoad, inc=pcInc, reset=reset, out[0..14]=pc[0..14], out[15]=pcsp);
+}
