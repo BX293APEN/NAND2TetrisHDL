@@ -1,0 +1,15 @@
+// Memory CHIP
+CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+    PARTS:
+        // アクセスするレジスタを決定する
+        DMux(in=true, sel=address[14], a=rl, b=ml);
+        DMux(in=ml, sel=address[13], a=sl, b=kl);
+        And(a=rl, b=load, out=rLoad);
+        RAM16K(in=in, load=rLoad, address[13]=address[13], address[12]=address[12], address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut);
+        And(a=sl, b=load, out=scLoad);
+        Screen(in=in, load=scLoad, address[12]=address[12], address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=scOut);
+        Keyboard(out=keyOut);
+        Mux4Way16(a=rOut, b=rOut, c=scOut, d=keyOut, sel[1]=address[14], sel[0]=address[13], out=out);
+}
