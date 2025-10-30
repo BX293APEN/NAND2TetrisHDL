@@ -1,0 +1,17 @@
+// RAM32K CHIP
+CHIP RAM32K {
+    IN in[16], load, address[15];
+    OUT out[16];
+    PARTS:
+        // アクセスするレジスタを決定する
+        DMux8Way(in=load, sel[2]=address[14], sel[1]=address[13], sel[0]=address[12], a=rl0, b=rl1, c=rl2, d=rl3, e=rl4, f=rl5, g=rl6, h=rl7);
+        RAM4K(in=in, load=rl0, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut0);
+        RAM4K(in=in, load=rl1, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut1);
+        RAM4K(in=in, load=rl2, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut2);
+        RAM4K(in=in, load=rl3, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut3);
+        RAM4K(in=in, load=rl4, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut4);
+        RAM4K(in=in, load=rl5, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut5);
+        RAM4K(in=in, load=rl6, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut6);
+        RAM4K(in=in, load=rl7, address[11]=address[11], address[10]=address[10], address[9]=address[9], address[8]=address[8], address[7]=address[7], address[6]=address[6], address[5]=address[5], address[4]=address[4], address[3]=address[3], address[2]=address[2], address[1]=address[1], address[0]=address[0], out=rOut7);
+        Mux8Way16(a=rOut0, b=rOut1, c=rOut2, d=rOut3, e=rOut4, f=rOut5, g=rOut6, h=rOut7, sel[2]=address[14], sel[1]=address[13], sel[0]=address[12], out=out);
+}
