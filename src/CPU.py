@@ -50,7 +50,7 @@ if __name__ == "__main__":
     )
 
     cpu.add_function( # Aレジスタ
-        "Register",
+        "ARegister",
         ["in", "load"], 
         ["instOut", "aLoad"],
         ["out", "out[0..14]"],

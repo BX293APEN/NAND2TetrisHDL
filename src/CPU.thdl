@@ -7,7 +7,7 @@ CHIP CPU {
         Not(in=instA, out=instC);
         Mux16(a=instruction, b=aluOut, sel=instC, out=instOut);
         Or(a=instA, b=instruction[5], out=aLoad);
-        Register(in=instOut, load=aLoad, out=aROut, out[0..14]=addressM[0..14]);
+        ARegister(in=instOut, load=aLoad, out=aROut, out[0..14]=addressM[0..14]);
         And(a=instC, b=instruction[4], out=dLoad);
         DRegister(in=aluOut, load=dLoad, out=dOut);
         Mux16(a=aROut, b=inM, sel=instruction[12], out=amOut);
